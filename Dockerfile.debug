@@ -1,0 +1,5 @@
+FROM alpine:3.16.0
+
+COPY README.md /
+
+CMD [ "cat", "/README.md" ]
