@@ -89,6 +89,9 @@ source "drivers/staging/gasket/Kconfig"\
 ' "${WORK_DIR}/linux/drivers/Kconfig"
 rm -f "${WORK_DIR}/linux/drivers/Kconfig.bak"
 
+# add gasket to the drivers Makefile
+echo 'obj-$(CONFIG_STAGING_GASKET_FRAMEWORK)	+= staging/gasket/' >> "${WORK_DIR}/linux/drivers/Makefile"
+
 # create patch file that adds gasket to the kernel sources
 mkdir -p "${WORK_DIR}/pkgs/kernel/prepare/patches"
 cd "${WORK_DIR}/linux"
