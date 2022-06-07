@@ -80,6 +80,14 @@ checkout https://github.com/google/gasket-driver "${WORK_DIR}/gasket" "${GASKET_
 # replace staging in-tree gasket (if present) with requested version of gasket
 cp -fr "${WORK_DIR}/gasket/src" "${WORK_DIR}/linux/drivers/staging/gasket"
 
+# source the gasket stuff in the drivers
+sed -i.bak '/endmenu/i \
+\
+source "drivers/staging/gasket/Kconfig"\
+\
+' "${WORK_DIR}/linux/drivers/Kconfig"
+rm -f "${WORK_DIR}/linux/drivers/Kconfig.bak"
+
 # create patch file that adds gasket to the kernel sources
 mkdir -p "${WORK_DIR}/pkgs/kernel/kernel/patches"
 cd "${WORK_DIR}/linux"
