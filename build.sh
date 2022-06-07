@@ -60,7 +60,7 @@ function get_pkgs_kernel_version {
 }
 
 # check if dependencies are installed
-check_installed git make docker yq sed
+check_installed git make docker sed
 
 # ensure work directory is present
 WORK_DIR="${INIT_DIR}/work"
@@ -72,45 +72,41 @@ checkout https://github.com/talos-systems/pkgs "${WORK_DIR}/pkgs" "${PKGS_VERSIO
 # extract the major.minor version from the kernel/prepare/pkg.yaml
 LINUX_MAJOR_MINOR="$(get_pkgs_kernel_version "${WORK_DIR}/pkgs")"
 
-# # grab linux kernel at the version from pkgs
-# checkout https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git "${WORK_DIR}/linux" "v${LINUX_MAJOR_MINOR}" shallow
+# grab linux kernel at the version from pkgs
+checkout https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git "${WORK_DIR}/linux" "v${LINUX_MAJOR_MINOR}" shallow
 
-# # grab gasket as the requested version
-# checkout https://github.com/google/gasket-driver "${WORK_DIR}/gasket" "${GASKET_VERSION}"
+# grab gasket as the requested version
+checkout https://github.com/google/gasket-driver "${WORK_DIR}/gasket" "${GASKET_VERSION}"
 
-# # replace staging in-tree gasket (if present) with requested version of gasket
-# cp -fr "${WORK_DIR}/gasket/src" "${WORK_DIR}/linux/drivers/staging/gasket"
+# replace staging in-tree gasket (if present) with requested version of gasket
+cp -fr "${WORK_DIR}/gasket/src" "${WORK_DIR}/linux/drivers/staging/gasket"
 
-# # source the gasket stuff in the drivers
-# sed -i.bak '/endmenu/i \
-# \
-# source "drivers/staging/gasket/Kconfig"\
-# \
-# ' "${WORK_DIR}/linux/drivers/Kconfig"
-# rm -f "${WORK_DIR}/linux/drivers/Kconfig.bak"
+# source the gasket stuff in the drivers
+sed -i.bak '/endmenu/i \
+\
+source "drivers/staging/gasket/Kconfig"\
+\
+' "${WORK_DIR}/linux/drivers/Kconfig"
+rm -f "${WORK_DIR}/linux/drivers/Kconfig.bak"
 
-# # create patch file that adds gasket to the kernel sources
-# mkdir -p "${WORK_DIR}/pkgs/kernel/prepare/patches"
-# cd "${WORK_DIR}/linux"
-# git add -A
-# git diff --cached --no-prefix > "${WORK_DIR}/pkgs/kernel/prepare/patches/gasket.patch"
+# create patch file that adds gasket to the kernel sources
+mkdir -p "${WORK_DIR}/pkgs/kernel/prepare/patches"
+cd "${WORK_DIR}/linux"
+git add -A
+git diff --cached --no-prefix > "${WORK_DIR}/pkgs/kernel/prepare/patches/gasket.patch"
 
-# # using a pre-defined patch, add the patch to the pkg.yaml...meta isn't it
-# cd "${WORK_DIR}/pkgs"
-# patch -p0 < ../../prepare.gasket.patch
+# using a pre-defined patch, add the patch to the pkg.yaml...meta isn't it
+cd "${WORK_DIR}/pkgs"
+patch -p0 < ../../prepare.gasket.patch
 
-# echo 'CONFIG_STAGING_GASKET_FRAMEWORK=y' >> "${WORK_DIR}/pkgs/kernel/build/config-amd64"
-# echo 'CONFIG_STAGING_APEX_DRIVER=y' >> "${WORK_DIR}/pkgs/kernel/build/config-amd64"
+echo 'CONFIG_STAGING_GASKET_FRAMEWORK=y' >> "${WORK_DIR}/pkgs/kernel/build/config-amd64"
+echo 'CONFIG_STAGING_APEX_DRIVER=y' >> "${WORK_DIR}/pkgs/kernel/build/config-amd64"
 
 TIMESTAMP=$(date '+%Y%m%d%H%M%S')
-TIMESTAMP=20220607162356
 KERNEL_IMAGE_TAG="v${LINUX_MAJOR_MINOR}-${TIMESTAMP}"
 
-# # build kernel image
-# make kernel PLATFORM=linux/amd64 USERNAME="${GITHUB_USERNAME}" TAG="${KERNEL_IMAGE_TAG}" PUSH="${PUSH}"
-
-
-# ghcr.io/ammmze/kernel:v5.15-20220607162356
+# build kernel image
+make kernel PLATFORM=linux/amd64 USERNAME="${GITHUB_USERNAME}" TAG="${KERNEL_IMAGE_TAG}" PUSH="${PUSH}"
 
 # build installer
 cd "${INIT_DIR}"
