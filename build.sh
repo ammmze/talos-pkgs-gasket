@@ -84,8 +84,8 @@ git diff --cached --no-prefix > "${WORK_DIR}/pkgs/kernel/kernel/patches/gasket.p
 cd "${WORK_DIR}/pkgs"
 patch -p0 < ../../prepare.gasket.patch
 
-echo 'STAGING_GASKET_FRAMEWORK=y' >> "${WORK_DIR}/pkgs/kernel/build/config-amd64"
-echo 'STAGING_APEX_DRIVER=y' >> "${WORK_DIR}/pkgs/kernel/build/config-amd64"
+echo 'CONFIG_STAGING_GASKET_FRAMEWORK=y' >> "${WORK_DIR}/pkgs/kernel/build/config-amd64"
+echo 'CONFIG_STAGING_APEX_DRIVER=y' >> "${WORK_DIR}/pkgs/kernel/build/config-amd64"
 
 # build kernel image
 make kernel PLATFORM=linux/amd64 USERNAME="${GITHUB_USERNAME}" PUSH=false
