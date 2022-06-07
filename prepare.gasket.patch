@@ -1,8 +1,8 @@
 diff --git kernel/prepare/pkg.yaml kernel/prepare/pkg.yaml
-index 37b01e3..0e0206e 100644
+index 37b01e3..804d303 100644
 --- kernel/prepare/pkg.yaml
 +++ kernel/prepare/pkg.yaml
-@@ -40,6 +40,12 @@ steps:
+@@ -40,6 +40,13 @@ steps:
          done
  
          make mrproper
@@ -10,6 +10,7 @@ index 37b01e3..0e0206e 100644
 +        set -e
 +        patch -p0 < /pkg/patches/gasket.patch
 +        grep 'gasket' drivers/Kconfig
++        ls -la drivers/staging/gasket
 +        echo 'debugging'
 +        exit 1
        - |
