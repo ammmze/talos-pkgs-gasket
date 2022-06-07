@@ -29,8 +29,9 @@ jobs:
         uses: docker/setup-buildx-action@v2
 
       - run: |
+          set -e
           TIMESTAMP=$(date '+%Y%m%d%H%M%S')
-          docker buildx build --push --tag ${{ env.REGISTRY }}/${{ github.repository_owner }}/debug:${TIMESTAMP} --file Dockerfile.debug .
+          docker buildx build --push --tag ${{ env.REGISTRY }}/${{ github.repository_owner }}/kernel:${TIMESTAMP} --file Dockerfile.debug .
           docker run --rm ${{ env.REGISTRY }}/${{ github.repository_owner }}/kernel:${TIMESTAMP}
 
       # - name: Build and push
