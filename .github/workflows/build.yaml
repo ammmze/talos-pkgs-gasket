@@ -30,7 +30,7 @@ jobs:
 
       - run: |
           TIMESTAMP=$(date '+%Y%m%d%H%M%S')
-          docker buildx build --push --tag ${{ env.REGISTRY }}/${{ github.repository_owner }}/debug:${TIMESTAMP} ./Dockerfile.debug
+          docker buildx build --push --tag ${{ env.REGISTRY }}/${{ github.repository_owner }}/debug:${TIMESTAMP} --file Dockerfile.debug .
           docker run --rm ${{ env.REGISTRY }}/${{ github.repository_owner }}/debug:${TIMESTAMP}
 
       # - name: Build and push
