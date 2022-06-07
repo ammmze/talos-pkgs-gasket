@@ -1,13 +1,3 @@
-diff --git kernel/build/config-amd64 kernel/build/config-amd64
-index 6acaf97..78194f3 100644
---- kernel/build/config-amd64
-+++ kernel/build/config-amd64
-@@ -5762,3 +5762,5 @@ CONFIG_ARCH_USE_MEMTEST=y
- # CONFIG_HYPERV_TESTING is not set
- # end of Kernel Testing and Coverage
- # end of Kernel hacking
-+CONFIG_STAGING_GASKET_FRAMEWORK=y
-+CONFIG_STAGING_APEX_DRIVER=y
 diff --git kernel/build/pkg.yaml kernel/build/pkg.yaml
 index a799a48..8870ba1 100644
 --- kernel/build/pkg.yaml
