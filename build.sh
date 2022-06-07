@@ -2,10 +2,11 @@
 
 set -euxo pipefail
 
-GITHUB_USERNAME=ammmze
+GITHUB_USERNAME="${GITHUB_USERNAME:-ammmze}"
 DOCKER_REGISTRY="ghcr.io/${GITHUB_USERNAME}"
 TALOS_VERSION=v1.2.0-alpha.0
 GASKET_VERSION=97aeba584efd18983850c36dcf7384b0185284b3
+PUSH="${PUSH:-false}"
 
 # todo: get whereever script is
 INIT_DIR="${PWD}"
@@ -23,13 +24,18 @@ function checkout {
     local url="$1"
     local dest="$2"
     local ref="$3"
+    local type="${4:-full}"
 
     if [ ! -d "${dest}" ]; then
-        git clone "${url}" "${dest}"
+        if [ "${type}" = 'shallow' ]; then
+            git clone --depth 1 --branch "${ref}" "${url}" "${dest}"
+        else
+            git clone "${url}" "${dest}"
+        fi
         cd "${dest}"
     else
         cd "${dest}"
-        git fetch origin
+        # git fetch origin
         git reset --hard
     fi
 
@@ -60,13 +66,13 @@ WORK_DIR="${INIT_DIR}/work"
 mkdir -p "${WORK_DIR}"
 
 # grab talos pkgs at the requested version
-checkout https://github.com/talos-systems/pkgs "${WORK_DIR}/pkgs" "${TALOS_VERSION}"
+checkout https://github.com/talos-systems/pkgs "${WORK_DIR}/pkgs" "${TALOS_VERSION}" shallow
 
 # extract the major.minor version from the kernel/prepare/pkg.yaml
 LINUX_MAJOR_MINOR="$(get_pkgs_kernel_version "${WORK_DIR}/pkgs")"
 
 # grab linux kernel at the version from pkgs
-checkout https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git "${WORK_DIR}/linux" "v${LINUX_MAJOR_MINOR}"
+checkout https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git "${WORK_DIR}/linux" "v${LINUX_MAJOR_MINOR}" shallow
 
 # grab gasket as the requested version
 checkout https://github.com/google/gasket-driver "${WORK_DIR}/gasket" "${GASKET_VERSION}"
@@ -87,17 +93,23 @@ patch -p0 < ../../prepare.gasket.patch
 echo 'CONFIG_STAGING_GASKET_FRAMEWORK=y' >> "${WORK_DIR}/pkgs/kernel/build/config-amd64"
 echo 'CONFIG_STAGING_APEX_DRIVER=y' >> "${WORK_DIR}/pkgs/kernel/build/config-amd64"
 
+TIMESTAMP=$(date '+%Y%m%d%H%M%S')
+KERNEL_IMAGE_TAG="v${LINUX_MAJOR_MINOR}-${TIMESTAMP}"
+
 # build kernel image
-make kernel PLATFORM=linux/amd64 USERNAME="${GITHUB_USERNAME}" PUSH=false
+make kernel PLATFORM=linux/amd64 USERNAME="${GITHUB_USERNAME}" TAG="${KERNEL_IMAGE_TAG}" PUSH="${PUSH}"
 
 # build installer
 cd "${INIT_DIR}"
-IMAGE_NAME="${DOCKER_REGISTRY}/talos-installer:$TALOS_VERSION"
+IMAGE_NAME="${DOCKER_REGISTRY}/talos-gasket-installer:${TALOS_VERSION}-${TIMESTAMP}"
 DOCKER_BUILDKIT=0 docker build \
     --build-arg TALOS_VERSION="${TALOS_VERSION}" \
     --build-arg KERNEL_REGISTRY="${DOCKER_REGISTRY}" \
-    --build-arg KERNEL_IMAGE_TAG="TBD" \
+    --build-arg KERNEL_IMAGE_TAG="${KERNEL_IMAGE_TAG}" \
     --build-arg RM="/lib/modules" \
     -t "$IMAGE_NAME" \
     .
-# docker push "$IMAGE_NAME"
+
+if [ "${PUSH}" = 'true' ]; then
+    docker push "$IMAGE_NAME"
+fi
