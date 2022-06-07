@@ -1,8 +1,35 @@
+diff --git kernel/build/config-amd64 kernel/build/config-amd64
+index 6acaf97..78194f3 100644
+--- kernel/build/config-amd64
++++ kernel/build/config-amd64
+@@ -5762,3 +5762,5 @@ CONFIG_ARCH_USE_MEMTEST=y
+ # CONFIG_HYPERV_TESTING is not set
+ # end of Kernel Testing and Coverage
+ # end of Kernel hacking
++CONFIG_STAGING_GASKET_FRAMEWORK=y
++CONFIG_STAGING_APEX_DRIVER=y
+diff --git kernel/build/pkg.yaml kernel/build/pkg.yaml
+index a799a48..8870ba1 100644
+--- kernel/build/pkg.yaml
++++ kernel/build/pkg.yaml
+@@ -16,6 +16,12 @@ steps:
+       - |
+         cd /src
+         python3 /toolchain/kconfig-hardened-check/bin/kconfig-hardened-check -c .config -m json | python3 /pkg/scripts/filter-hardened-check.py
++      - |
++        set -e
++        grep 'gasket' /src/drivers/Kconfig
++        ls -la /src/drivers/staging/gasket
++        echo 'debugging'
++        exit 1
+       - |
+         cd /src
+ 
 diff --git kernel/prepare/pkg.yaml kernel/prepare/pkg.yaml
-index 37b01e3..804d303 100644
+index 37b01e3..2bd00c4 100644
 --- kernel/prepare/pkg.yaml
 +++ kernel/prepare/pkg.yaml
-@@ -40,6 +40,13 @@ steps:
+@@ -40,6 +40,11 @@ steps:
          done
  
          make mrproper
@@ -11,8 +38,6 @@ index 37b01e3..804d303 100644
 +        patch -p0 < /pkg/patches/gasket.patch
 +        grep 'gasket' drivers/Kconfig
 +        ls -la drivers/staging/gasket
-+        echo 'debugging'
-+        exit 1
        - |
          cd /toolchain && git clone https://github.com/a13xp0p0v/kconfig-hardened-check.git
        - |
