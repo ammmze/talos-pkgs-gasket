@@ -1,13 +1,17 @@
 diff --git kernel/prepare/pkg.yaml kernel/prepare/pkg.yaml
-index 37b01e3..164e87c 100644
+index 37b01e3..0e0206e 100644
 --- kernel/prepare/pkg.yaml
 +++ kernel/prepare/pkg.yaml
-@@ -40,6 +40,8 @@ steps:
+@@ -40,6 +40,12 @@ steps:
          done
  
          make mrproper
 +      - |
++        set -e
 +        patch -p0 < /pkg/patches/gasket.patch
++        grep 'gasket' drivers/Kconfig
++        echo 'debugging'
++        exit 1
        - |
          cd /toolchain && git clone https://github.com/a13xp0p0v/kconfig-hardened-check.git
        - |
