@@ -1,0 +1,14 @@
+diff --git kernel/kernel/pkg.yaml kernel/kernel/pkg.yaml
+index 1f5f200..8525187 100644
+--- kernel/kernel/pkg.yaml
++++ kernel/kernel/pkg.yaml
+@@ -6,6 +6,9 @@ dependencies:
+ steps:
+   - env:
+       ARCH: {{ if eq .ARCH "aarch64"}}arm64{{ else if eq .ARCH "x86_64" }}x86_64{{ else }}unsupported{{ end }}
++    prepare:
++      - |
++        patch -p0 < /pkg/patches/gasket.patch
+     install:
+       - |
+         cd /src
