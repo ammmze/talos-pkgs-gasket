@@ -4,7 +4,7 @@ set -euxo pipefail
 
 GITHUB_USERNAME=ammmze
 DOCKER_REGISTRY="ghcr.io/${GITHUB_USERNAME}"
-TALOS_VERSION=v1.1.0
+TALOS_VERSION=v1.2.0-alpha.0
 GASKET_VERSION=97aeba584efd18983850c36dcf7384b0185284b3
 
 # todo: get whereever script is
