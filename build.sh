@@ -89,10 +89,10 @@ source "drivers/staging/gasket/Kconfig"\
 rm -f "${WORK_DIR}/linux/drivers/Kconfig.bak"
 
 # create patch file that adds gasket to the kernel sources
-mkdir -p "${WORK_DIR}/pkgs/kernel/kernel/patches"
+mkdir -p "${WORK_DIR}/pkgs/kernel/prepare/patches"
 cd "${WORK_DIR}/linux"
 git add -A
-git diff --cached --no-prefix > "${WORK_DIR}/pkgs/kernel/kernel/patches/gasket.patch"
+git diff --cached --no-prefix > "${WORK_DIR}/pkgs/kernel/prepare/patches/gasket.patch"
 
 # using a pre-defined patch, add the patch to the pkg.yaml...meta isn't it
 cd "${WORK_DIR}/pkgs"

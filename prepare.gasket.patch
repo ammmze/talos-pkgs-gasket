@@ -1,14 +1,13 @@
-diff --git kernel/kernel/pkg.yaml kernel/kernel/pkg.yaml
-index 1f5f200..8525187 100644
---- kernel/kernel/pkg.yaml
-+++ kernel/kernel/pkg.yaml
-@@ -6,6 +6,9 @@ dependencies:
- steps:
-   - env:
-       ARCH: {{ if eq .ARCH "aarch64"}}arm64{{ else if eq .ARCH "x86_64" }}x86_64{{ else }}unsupported{{ end }}
-+    prepare:
+diff --git kernel/prepare/pkg.yaml kernel/prepare/pkg.yaml
+index 37b01e3..27966c5 100644
+--- kernel/prepare/pkg.yaml
++++ kernel/prepare/pkg.yaml
+@@ -44,6 +44,8 @@ steps:
+         cd /toolchain && git clone https://github.com/a13xp0p0v/kconfig-hardened-check.git
+       - |
+         patch -p1 < /pkg/patches/hardening.kconfig.patch
 +      - |
 +        patch -p0 < /pkg/patches/gasket.patch
      install:
        - |
-         cd /src
+         mkdir -p /src
