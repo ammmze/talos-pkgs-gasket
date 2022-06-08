@@ -5,8 +5,8 @@ set -euxo pipefail
 GITHUB_USERNAME="${GITHUB_USERNAME:-ammmze}"
 DOCKER_REGISTRY="ghcr.io/${GITHUB_USERNAME}"
 PKGS_VERSION=v1.2.0-alpha.0
+PKGS_VERSION=master
 TALOS_VERSION=v1.0.6
-GASKET_VERSION=97aeba584efd18983850c36dcf7384b0185284b3
 PUSH="${PUSH:-false}"
 
 # todo: get whereever script is
@@ -60,7 +60,7 @@ function get_pkgs_kernel_version {
 }
 
 # check if dependencies are installed
-check_installed git make docker sed
+check_installed git make docker
 
 # ensure work directory is present
 WORK_DIR="${INIT_DIR}/work"
@@ -72,38 +72,20 @@ checkout https://github.com/talos-systems/pkgs "${WORK_DIR}/pkgs" "${PKGS_VERSIO
 # extract the major.minor version from the kernel/prepare/pkg.yaml
 LINUX_MAJOR_MINOR="$(get_pkgs_kernel_version "${WORK_DIR}/pkgs")"
 
-# grab linux kernel at the version from pkgs
-checkout https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git "${WORK_DIR}/linux" "v${LINUX_MAJOR_MINOR}" shallow
+# add our script (add-gasket.sh) that adds gasket drivers to pkgs/kernel/prepare/scripts
+mkdir -p "${WORK_DIR}/pkgs/kernel/prepare/scripts"
+cp -f "${INIT_DIR}/add-gasket.sh" "${WORK_DIR}/pkgs/kernel/prepare/scripts"
 
-# grab gasket as the requested version
-checkout https://github.com/google/gasket-driver "${WORK_DIR}/gasket" "${GASKET_VERSION}"
-
-# replace staging in-tree gasket (if present) with requested version of gasket
-cp -fr "${WORK_DIR}/gasket/src" "${WORK_DIR}/linux/drivers/staging/gasket"
-
-# source the gasket stuff in the drivers
-sed -i.bak '/endmenu/i \
-\
-source "drivers/staging/gasket/Kconfig"\
-\
-' "${WORK_DIR}/linux/drivers/Kconfig"
-rm -f "${WORK_DIR}/linux/drivers/Kconfig.bak"
-
-# add gasket to the drivers Makefile
-echo 'obj-$(CONFIG_STAGING_GASKET_FRAMEWORK)	+= staging/gasket/' >> "${WORK_DIR}/linux/drivers/Makefile"
-
-# create patch file that adds gasket to the kernel sources
-mkdir -p "${WORK_DIR}/pkgs/kernel/prepare/patches"
-cd "${WORK_DIR}/linux"
-git add -A
-git diff --cached --no-prefix > "${WORK_DIR}/pkgs/kernel/prepare/patches/gasket.patch"
-
-# using a pre-defined patch, add the patch to the pkg.yaml...meta isn't it
+# patch the pkgs kerne/prepare/pkg.yaml to run the script to add gasket
+# see create-pkgs-patch.sh for now this was created
 cd "${WORK_DIR}/pkgs"
 patch -p0 < ../../prepare.gasket.patch
 
+# enable gasket in the build configs
 echo 'CONFIG_STAGING_GASKET_FRAMEWORK=y' >> "${WORK_DIR}/pkgs/kernel/build/config-amd64"
 echo 'CONFIG_STAGING_APEX_DRIVER=y' >> "${WORK_DIR}/pkgs/kernel/build/config-amd64"
+echo 'CONFIG_STAGING_GASKET_FRAMEWORK=y' >> "${WORK_DIR}/pkgs/kernel/build/config-arm64"
+echo 'CONFIG_STAGING_APEX_DRIVER=y' >> "${WORK_DIR}/pkgs/kernel/build/config-arm64"
 
 TIMESTAMP=$(date '+%Y%m%d%H%M%S')
 KERNEL_IMAGE_TAG="v${LINUX_MAJOR_MINOR}-${TIMESTAMP}"
