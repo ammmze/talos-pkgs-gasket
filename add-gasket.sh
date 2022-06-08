@@ -14,6 +14,9 @@ git checkout "${GASKET_VERSION}"
 # add gasket to source files to kernel (in same location they were added in 4.19...and later removed)
 cp -fr "${TMP_DIR}/gasket/src" "${KERNEL_DIR}/drivers/staging/gasket"
 
+sed -i.bak 's/obj-m/obj-y/' "${KERNEL_DIR}/drivers/staging/gasket/Makefile"
+rm -f "${KERNEL_DIR}/drivers/staging/gasket/Makefile.bak"
+
 # include gasket in the drivers menu
 sed -i.bak '/endmenu/i \
 \
