@@ -4,11 +4,9 @@
     {
       "fileMatch": ["\\.sh$"],
       "matchStrings": [
-        "datasource=(?<datasource>.*?) depName=(?<depName>.*?)( branch=(?<branch>.*?))?( versioning=(?<versioning>.*?))?\\s.*?_VERSION=(?<currentValue>.*)\\s"
+        "datasource=(?<datasource>.*?) depName=(?<depName>.*?)( versioning=(?<versioning>.*?))?\\s.*?_VERSION=(?<currentValue>.*)\\s"
       ],
-      "versioningTemplate": "{{#if versioning}}{{{versioning}}}{{else}}semver{{/if}}",
-      "currentValueTemplate": "{{#if branch}}{{{branch}}}{{else}}{{{currentValue}}}{{/if}}",
-      "depNameTemplate": "{{#if branch}}https://github.com/{{{depName}}}.git{{else}}{{{depName}}}{{/if}}"
+      "versioningTemplate": "{{#if versioning}}{{{versioning}}}{{else}}semver{{/if}}"
     }
   ]
 }
