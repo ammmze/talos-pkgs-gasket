@@ -4,7 +4,7 @@ set -ex
 
 KERNEL_DIR="${1:-$PWD}"
 # renovate: datasource=git-refs branch=main depName=https://github.com/google/gasket-driver versioning=git
-GASKET_VERSION=5993718586065583670cf77bf3dfdedabdeafe6d
+GASKET_VERSION=97aeba584efd18983850c36dcf7384b0185284b3
 
 TMP_DIR=$(mktemp -d 2>/dev/null || mktemp -d -t 'gasket')
 
