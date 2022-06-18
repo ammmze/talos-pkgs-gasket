@@ -11,10 +11,9 @@
     {
       "fileMatch": ["\\.sh$"],
       "matchStrings": [
-        "datasource=(?<datasource>git-refs) branch=(?<branch>.*?) depName=(?<depName>.*?)( versioning=(?<versioning>.*?))?\\s.*?_VERSION=(?<currentDigest>.*)\\s"
+        "datasource=(?<datasource>git-refs) branch=(?<currentValue>.*?) depName=(?<depName>.*?)( versioning=(?<versioning>.*?))?\\s.*?_VERSION=(?<currentDigest>.*)\\s"
       ],
       "versioningTemplate": "{{#if versioning}}{{{versioning}}}{{else}}semver{{/if}}",
-      "currentValueTemplate": "{{{branch}}}",
     },
   ]
 }
