@@ -1,20 +1,20 @@
 {
   extends: ['config:base'],
   regexManagers: [
-    // {
-    //   "fileMatch": ["\\.sh$"],
-    //   "matchStrings": [
-    //     "datasource=(?<datasource>.*?) depName=(?<depName>.*?)( versioning=(?<versioning>.*?))?\\s.*?_VERSION=(?<currentValue>.*)\\s"
-    //   ],
-    //   "versioningTemplate": "{{#if versioning}}{{{versioning}}}{{else}}semver{{/if}}"
-    // },
     {
-      "fileMatch": ["add-gasket\\.sh$"],
+      "fileMatch": ["\\.sh$"],
       "matchStrings": [
-        "datasource=(?<datasource>.*?) depName=(?<depName>.*?)( versioning=(?<versioning>.*?))?\\s.*?_VERSION=(?<currentDigest>.*)\\s"
+        "datasource=(?<datasource>.*?) depName=(?<depName>.*?)( versioning=(?<versioning>.*?))?\\s.*?_VERSION=(?<currentValue>.*)\\s"
+      ],
+      "versioningTemplate": "{{#if versioning}}{{{versioning}}}{{else}}semver{{/if}}"
+    },
+    {
+      "fileMatch": ["\\.sh$"],
+      "matchStrings": [
+        "datasource=(?<datasource>git-refs) depName=(?<depName>.*?) branch=(?<branch>.*?)( versioning=(?<versioning>.*?))?\\s.*?_VERSION=(?<currentDigest>.*)\\s"
       ],
       "versioningTemplate": "{{#if versioning}}{{{versioning}}}{{else}}semver{{/if}}",
-      "currentValueTemplate": "main",
+      "currentValueTemplate": "{{{branch}}}",
     },
   ]
 }
