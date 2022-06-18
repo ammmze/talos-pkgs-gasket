@@ -4,7 +4,6 @@ on:
   push:
     branches:
       - 'main'
-      - 'optimize'
 
 env:
   REGISTRY: ghcr.io
