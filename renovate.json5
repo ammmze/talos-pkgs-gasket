@@ -8,7 +8,7 @@
       ],
       "versioningTemplate": "{{#if versioning}}{{{versioning}}}{{else}}semver{{/if}}",
       "currentValueTemplate": "{{#if branch}}{{{branch}}}{{else}}{{{currentValue}}}{{/if}}",
-      "packageNameTemplate": "{{#if branch}}https://github.com/{{{depName}}}.git{{else}}{{{depName}}}{{/if}}"
+      "depNameTemplate": "{{#if branch}}https://github.com/{{{depName}}}.git{{else}}{{{depName}}}{{/if}}"
     }
   ]
 }
