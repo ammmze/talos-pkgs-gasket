@@ -4,7 +4,7 @@
     {
       "fileMatch": ["\\.sh$"],
       "matchStrings": [
-        "datasource=(?<datasource>.*?) depName=(?<depName>.*?)( branch=(?<branch>.*?))?( versioning=(?<versioning>.*?))?\\s.*?_VERSION=(?<currentDigest>.*)\\s"
+        "datasource=(?<datasource>.*?) depName=(?<depName>.*?)( branch=(?<branch>.*?))?( versioning=(?<versioning>.*?))?\\s.*?_VERSION=(?<currentValue>.*)\\s"
       ],
       "versioningTemplate": "{{#if versioning}}{{{versioning}}}{{else}}semver{{/if}}",
       "currentValueTemplate": "{{#if branch}}{{{branch}}}{{else}}{{{currentValue}}}{{/if}}",
