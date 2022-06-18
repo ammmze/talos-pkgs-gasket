@@ -5,9 +5,9 @@ set -euxo pipefail
 GITHUB_USERNAME="${GITHUB_USERNAME:-ammmze}"
 DOCKER_REGISTRY="ghcr.io/${GITHUB_USERNAME}"
 # renovate: datasource=github-releases depName=siderolabs/pkgs
-PKGS_VERSION=v1.1.0
+PKGS_VERSION=v1.0.0
 # renovate: datasource=github-releases depName=siderolabs/talos
-TALOS_VERSION=v1.0.6
+TALOS_VERSION=v1.0.5
 PUSH="${PUSH:-false}"
 
 # todo: get whereever script is
