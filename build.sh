@@ -5,12 +5,7 @@ set -euxo pipefail
 GITHUB_USERNAME="${GITHUB_USERNAME:-ammmze}"
 DOCKER_REGISTRY="ghcr.io/${GITHUB_USERNAME}"
 # renovate: datasource=github-releases depName=siderolabs/pkgs
-PKGS_VERSION=v1.1.0
-# apparently github release version and git tag versions are not in-sync...the git tag is older
-# and doesn't have the fix kconfig-hardened-check fix from here:
-# https://github.com/siderolabs/pkgs/commit/dc21e30a2f31effab56b6e32c785fd0644eb90d2
-# so for now we will use the commit referenced by github release v1.1.0
-PKGS_VERSION=f5db31f5678605baf9a8ddf9f840108126adb736
+PKGS_VERSION=v1.2.0-alpha.0
 # renovate: datasource=github-releases depName=siderolabs/talos
 TALOS_VERSION=v1.1.0
 PUSH="${PUSH:-false}"
@@ -73,8 +68,7 @@ WORK_DIR="${INIT_DIR}/work"
 mkdir -p "${WORK_DIR}"
 
 # grab talos pkgs at the requested version
-# disable shallow because that only works with branch/tags
-checkout https://github.com/talos-systems/pkgs "${WORK_DIR}/pkgs" "${PKGS_VERSION}" # shallow
+checkout https://github.com/talos-systems/pkgs "${WORK_DIR}/pkgs" "${PKGS_VERSION}" shallow
 
 # extract the major.minor version from the kernel/prepare/pkg.yaml
 LINUX_MAJOR_MINOR="$(get_pkgs_kernel_version "${WORK_DIR}/pkgs")"
