@@ -7,7 +7,7 @@ DOCKER_REGISTRY="ghcr.io/${GITHUB_USERNAME}"
 # renovate: datasource=github-releases depName=siderolabs/pkgs
 PKGS_VERSION=v1.2.0
 # renovate: datasource=github-releases depName=siderolabs/talos
-TALOS_VERSION=v1.2.7
+TALOS_VERSION=v1.4.8
 PUSH="${PUSH:-false}"
 
 # todo: get whereever script is
