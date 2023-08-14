@@ -1,3 +1,7 @@
+# Archived
+
+This repo is no longer kept up-to-date. The gasket extension has been added to the upstream Talos library of extensions. Please install the extension from there.
+
 # talos-pkgs-gasket
 Builds talos installer with google gasket kernel module. This repo aims to build the latest stable release of Talos with the gasket driver required to run PCI based [Coral](https://coral.ai) devices.
 
